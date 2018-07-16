@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Category - {{ category }}{% endblock %}
+{% block main_content %}
+    <h3 class="pb-3 mb-4 font-italic border-bottom">{{ category }} Post</h3>
+    {% for post in page_obj.object_list %}
+        <div class="blog-post">
+            <h3 class="blog-post-title"><a href="{% url 'article' post.id %}">{{ post.title }}</a></h3>
+            <p class="blog-post-meta">{{ post.posted_time }} by <a href="#">{{ post.author }}</a></p>
+            <p>{{ post.content|truncatechars_html:200|striptags }}</p>
+            <a class="btn" href="{% url 'article' post.id %}">Read >></a>
+        </div><!-- /.blog-post -->
+        <hr class="featurette-divider">
+    {% endfor %}
+    {% include 'paginator.html' %}
+{% endblock %}

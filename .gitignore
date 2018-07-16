@@ -1,0 +1,4 @@
+.idea
+setting.py
+db.sqlite3
+myblog/__pycache__/

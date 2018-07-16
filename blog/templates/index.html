@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block main_content %}
+    <h3 class="pb-3 mb-4 font-italic border-bottom">Latest Post</h3>
+    {% for post in page_obj.object_list %}
+        <div class="blog-post">
+            <!-- add links of post.title and post.author to the article.html -->
+            <h3 class="blog-post-title"><a href="{% url 'article' post.id %}">{{ post.title }}</a></h3>
+            <p class="blog-post-meta">{{ post.posted_time }} by <a href="#">{{ post.author }}</a></p>
+            <p>{{ post.content|truncatechars_html:200|striptags }}</p>
+            <a class="btn" href="{% url 'article' post.id %}">Read >></a>
+        </div>
+        <hr class="featurette-divider">
+    {% endfor %}
+    {% include 'paginator.html' %}
+{% endblock %}

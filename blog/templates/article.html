@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block main_content %}
+    <div class="blog-post">
+        <h3 class="blog-post-title"><a>{{ object.title }}</a></h3>
+        <p class="blog-post-meta">{{ object.posted_time }} by <a href="#">{{ object.author }}</a>
+        </p>
+        <p>{{ object.content|safe }}</p>
+    </div>
+    <hr>
+    <div class="blog-category">
+        <p>Categories: <a href="{% url 'category' object.category.id %}">{{ object.category }}</a>
+        </p>
+    </div>
+    <div class="blog-tag">
+        <p>Reading more about
+            {% for tag in post.tag.all %}
+                <a href="#">{{ tag }}</a>
+                {% if not forloop.last %}
+                    |
+                {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+    <hr style="margin-bottom: 3rem">
+    <div class="blog-comments">
+        <h3>Comments</h3>
+        <hr>
+        {% for comment in comment_list %}
+            {% if comment.reply == None %}  <!-- if not have an objective to replay, then its the parent comment -->
+                <div class="parent-comment">
+                    <p>{{ comment.name }} {{ comment.posted_time }}</p>
+                    <div class="comment-content">{{ comment.content }}</div>
+                </div>
+            {% endif %}
+            <div class="children-comment">
+                <div class="row">
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
