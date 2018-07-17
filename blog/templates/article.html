@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block main_content %}
+    <!-- post block -->
     <div class="blog-post">
         <h3 class="blog-post-title"><a>{{ object.title }}</a></h3>
         <p class="blog-post-meta">{{ object.posted_time }} by <a href="#">{{ object.author }}</a>
@@ -23,23 +24,21 @@
         </p>
     </div>
     <hr style="margin-bottom: 3rem">
+    <!-- comments block -->
     <div class="blog-comments">
         <h3>Comments</h3>
         <hr>
         {% for comment in comment_list %}
             {% if comment.reply == None %}  <!-- if not have an objective to replay, then its a parent comment -->
                 <div class="parent-comment">
-                    <p>{{ comment.name }} {{ comment.posted_time }}</p>
+                    <p class="comment-nav">{{ comment.name }} {{ comment.posted_time }}</p>
                     <div class="comment-content">{{ comment.content }}</div>
                 </div>
-                <hr>
             {% else %}
-                <div class="children-comment" style="margin-left: 20px">
-                    <p>{{ comment.reply.name }} {{ comment.posted_time }}</p>
+                <div class="children-comment">
+                    <p class="comment-nav">{{ comment.reply.name }} {{ comment.posted_time }}</p>
                     <div class="comment-content">{{ comment.content }}</div>
-                    <hr>
                 </div>
-
             {% endif %}
         {% endfor %}
     </div>
