@@ -6,7 +6,7 @@
         <div class="blog-post">
             <h3 class="blog-post-title"><a href="{% url 'article' post.id %}">{{ post.title }}</a></h3>
             <p class="blog-post-meta">{{ post.posted_time }} by <a href="#">{{ post.author }}</a></p>
-            <p>{{ post.content|truncatechars_html:200|striptags }}</p>
+            <p>{{ post.content|truncatechars_html:100|safe }}</p>
             <a class="btn" href="{% url 'article' post.id %}">Read >></a>
         </div><!-- /.blog-post -->
         <hr class="featurette-divider">

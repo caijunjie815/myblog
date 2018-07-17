@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
-from blog.models import Post, Category, Comments, Tag
-from django.views.generic import ListView, DetailView
 from django.db.models import Q
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView
+
+from blog.models import Post, Category, Comments
 
 
 # Create your views here.
@@ -12,18 +13,19 @@ class PostList(ListView):  # index.html: list all posts ordered by posted time.
     paginate_by = 5  # set numbers of posts per page.
 
 
-class CategoryList(ListView):  # category.html :list all posts in a certain category ordered by posted time.
-    model = Category
+class CategoryList(ListView):  # category.html :list all posts in a given category ordered by posted time.
+    model = Post
     template_name = 'category.html'
     paginate_by = 5
 
     def get_queryset(self):  # define queryset method
-        return Post.objects.filter(category=self.kwargs['category']).order_by('-id')
+        return Post.objects.filter(category=self.kwargs['category']).order_by(
+            '-id')  # use passed category id to obtain posts.
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):  # pass extra args to template.
         context = super().get_context_data(**kwargs)
         category = Category.objects.get(id=self.kwargs['category'])
-        context['category'] = category.name
+        context['category'] = category.name  # the variable name "category" will be used in template in {{category}}.
         return context
 
 
@@ -57,8 +59,8 @@ class PostView(DetailView):  # view an article's all content.
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        comments = Comments.objects.filter(article=self.kwargs['pk'])  # 通过文章id查询评论内容
-        context['comment_list'] = self.comment_sort(comments)  # 将排序归类后的文章列表存入传送到模板的数据中
+        comments = Comments.objects.filter(article=self.kwargs['pk'])  # query comments by post id.
+        context['comment_list'] = self.comment_sort(comments)
         return context
 
 

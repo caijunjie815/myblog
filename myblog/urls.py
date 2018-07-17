@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from blog import views as blog_views
 from blog.views import *
 
@@ -23,6 +24,7 @@ urlpatterns = [
     path('about/', blog_views.about),
     path('', PostList.as_view()),
     path('category/<int:category>', CategoryList.as_view(), name='category'),
+    # <int:category> is the keywords matching self.kwargs['category'] in views.py
     path('search/', Search.as_view(), name='search'),
     path('article/<int:pk>', PostView.as_view(), name='article'),
 ]
