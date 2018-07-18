@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 # Create your models here.
@@ -19,7 +19,8 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=0)
+    id = models.AutoField(primary_key=True)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=100, unique=True)
     content = models.TextField()
     posted_time = models.DateField(auto_now=True)
@@ -31,8 +32,9 @@ class Post(models.Model):
 
 
 class Comments(models.Model):
-    name = models.CharField('Nickname', max_length=20, default=0)
-    email = models.EmailField(default=0)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField('Nickname', max_length=20)
+    email = models.EmailField()
     content = models.TextField()
     posted_time = models.DateField(auto_now=True)
     article = models.ForeignKey(Post, on_delete=models.CASCADE)
