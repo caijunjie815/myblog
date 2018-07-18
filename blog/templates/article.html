@@ -29,14 +29,15 @@
         <h3>Comments</h3>
         <hr>
         {% for comment in comment_list %}
-            {% if comment.reply == None %}  <!-- if not have an objective to replay, then its a parent comment -->
+            {% if comment.reply == None %}  <!-- if no replay, then its a parent comment -->
                 <div class="parent-comment">
-                    <p class="comment-nav">{{ comment.name }} {{ comment.posted_time }}</p>
+                    <p class="comment-nav">{{ comment.name }} ({{ comment.posted_time }})</p>
                     <div class="comment-content">{{ comment.content }}</div>
                 </div>
             {% else %}
                 <div class="children-comment">
-                    <p class="comment-nav">{{ comment.reply.name }} {{ comment.posted_time }}</p>
+                    <p class="comment-nav">{{ comment.name }} >>> {{ comment.reply.name }}
+                        ({{ comment.posted_time }})</p>
                     <div class="comment-content">{{ comment.content }}</div>
                 </div>
             {% endif %}

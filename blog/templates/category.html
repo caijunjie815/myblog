@@ -10,6 +10,8 @@
             <a class="btn" href="{% url 'article' post.id %}">Read >></a>
         </div><!-- /.blog-post -->
         <hr class="featurette-divider">
+    {% empty %}
+        <h3>No posts about {{ category }} yet!</h3>
     {% endfor %}
     {% include 'paginator.html' %}
 {% endblock %}

@@ -18,11 +18,11 @@ class CategoryList(ListView):  # category.html :list all posts in a given catego
     template_name = 'category.html'
     paginate_by = 5
 
-    def get_queryset(self):  # define queryset method
+    def get_queryset(self):  # get queryset
         return Post.objects.filter(category=self.kwargs['category']).order_by(
             '-id')  # use passed category id to obtain posts.
 
-    def get_context_data(self, **kwargs):  # pass extra args to template.
+    def get_context_data(self, **kwargs):  # pass extra arguments to template.
         context = super().get_context_data(**kwargs)
         category = Category.objects.get(id=self.kwargs['category'])
         context['category'] = category.name  # the variable name "category" will be used in template in {{category}}.
@@ -34,28 +34,29 @@ class PostView(DetailView):  # view an article's all content.
     template_name = 'article.html'
 
     # define comment function
-    def comment_sort(self, comments):  # 评论排序函数
-        self.comment_list = []  # 排序后的评论列表
-        self.top_level = []  # 存储顶级评论
-        self.sub_level = {}  # 存储回复评论
-        for comment in comments:  # 遍历所有评论
-            if comment.reply == None:  # 如果没有回复目标
-                self.top_level.append(comment)  # 存入顶级评论列表
-            else:  # 否则
-                self.sub_level.setdefault(comment.reply.id, []).append(comment)  # 以回复目标（父级评论）id为键存入字典
-        for top_comment in self.top_level:  # 遍历顶级评论
-            self.format_show(top_comment)  # 通过递归函数进行评论归类
-        return self.comment_list  # 返回最终的评论列表
+    def comment_sort(self, comments):  # sort comments which will be display in template.
+        self.comment_list = []  # the final list of comments
+        self.top_level = []  # save top comments in a list
+        self.sub_level = {}  # save kid comments in a dict.
+        # classify comments into top comment list or kid comment dictionary.
+        for comment in comments:
+            if comment.reply == None:
+                self.top_level.append(comment)
+            else:
+                self.sub_level.setdefault(comment.reply.id, []).append(comment)  # key=parent's id, value= this comment.
+        for top_comment in self.top_level:
+            self.format_show(top_comment)  # call a recursive function
+        return self.comment_list  # return sorted list of comments.
 
-    def format_show(self, top_comment):  # 递归函数
-        self.comment_list.append(top_comment)  # 将参数评论存入列表
+    def format_show(self, comment):  # recursive function to save comment, followed by its kid comment.
+        self.comment_list.append(comment)
         try:
-            self.kids = self.sub_level[top_comment.id]  # 获取参数评论的所有回复评论
-        except KeyError:  # 如果不存在回复评论
-            pass  # 结束递归
-        else:  # 否则
-            for kid in self.kids:  # 遍历回复评论
-                self.format_show(kid)  # 进行下一层递归
+            self.kids = self.sub_level[comment.id]  # obtain all replay in a comment.
+        except KeyError:  # if no replay
+            pass  # end recursive
+        else:
+            for kid in self.kids:
+                self.format_show(kid)  # next recursive
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
