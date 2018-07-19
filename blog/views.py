@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 
 from blog.models import Post, Category, Comments
@@ -66,9 +66,10 @@ class PostView(DetailView):  # view an article's all content.
         comments = Comments.objects.filter(article=self.kwargs['pk'])  # query comments by post id.
         context['comment_list'] = self.comment_sort(comments)
 
-        # submit comments
+        # pass comment forms to template
         comment_form = CommentForm()
         context['comment_form'] = comment_form
+
         return context
 
 
@@ -92,24 +93,3 @@ class Search(ListView):
 
 def about(request):
     return render(request, 'about.html')
-
-
-def pub_comment(request):
-    if request.method == 'POST':  # 如果是post请求
-        comment = Comments()  # 创建评论对象
-        comment.article = Post.objects.get(id=request.POST.get('article'))  # 设置评论所属的文章
-        if request.POST.get('reply') != '0':  # 如果回复的不是文章而是他人评论
-            comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # 设置回复的目标评论
-        form = CommentForm(request.POST, instance=comment)  # 将用户的输入和评论对象结合为完整的表单数据对象
-        if form.is_valid():  # 如果表单数据校验有效
-            try:
-                form.save()  # 将表单数据存入数据库
-                result = '200'  # 提交结果为成功编码
-            except:  # 如果发生异常
-                result = '100'  # 提交结果为失败编码
-
-        else:  # 如果表单数据校验无效
-            result = '100'  # 提交结果为失败编码
-        return HttpResponse(result)  # 返回提交结果到页面
-    else:  # 如果不是post请求
-        return HttpResponse('Not a post request!')  # 返回提交结果到页面

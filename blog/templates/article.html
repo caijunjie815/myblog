@@ -30,23 +30,17 @@
         <hr>
         <div id="respond" class="comment-respond">
             <h3 id="publish">Leave a message</h3>
-            <form action="#" method="post" id="commentform" class="comment-form">
+            <form action="#publish" method="post" id="commentform" class="comment-form">
+
                 <p class="comment-notes"><span id="email-notes">Your email address will not be published.</span>
                     Required fields are marked <span class="required">*</span></p>
                 <input type="hidden" id="reply" name="reply" value="0">
-                <div class="form-group comment-form-author"><input id="name" class="form-control" name="name"
-                                                                   type="text" placeholder="Name*" value="" size="30"
-                                                                   aria-required="true"></div>
-                <div class="form-group comment-form-email"><input id="email" class="form-control" name="email"
-                                                                  type="text" placeholder="Email*" value="" size="30"
-                                                                  aria-required="true"></div>
-                <div class="form-group comment-form-comment"><textarea id="content" class="form-control" name="content"
-                                                                       cols="45" rows="4" aria-required="true"
-                                                                       placeholder="Message..."></textarea></div>
+                <div class="form-group comment-form-author">{{ comment_form.name }}</div>
+                <div class="form-group comment-form-email">{{ comment_form.email }}</div>
+                <div class="form-group comment-form-comment">{{ comment_form.content }}</div>
                 <p class="form-submit"><input name="submit" type="submit" id="submit_comment" class="submit"
                                               value="Post Comment"></p>
             </form>
-            <label id="comment_message" hidden style="margin-top: 10px;vertical-align: middle;color: green"></label>
         </div>
         <hr>
         {% for comment in comment_list %}
@@ -72,46 +66,5 @@
             <a>No comments yet!</a>
         {% endfor %}
     </div>
-    <script>
-        function reply(comment_name, comment_id) {
-            $('#content').attr('placeholder', 'Reply to ' + comment_name + '：'); // 设置内容输入框的提示
-            $('#reply').val(comment_id) //设置隐藏元素的值为评论目标的id
-        }
-    </script>
-    <script>
-        $(document).ready(function () {
-            $('#submit_comment').click(function () { // 定义回复按钮点击时调用的函数
-                $.ajaxSetup({ // 添加防止跨域攻击的代码
-                    data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
-                });
-                var reply = $('#reply').val(); // 将评论目标id存入变量
-                var name = $('#name').val(); // 将评论人昵称存入变量
-                var email = $('#email').val(); // 将评论人邮箱地址存入变量
-                var content = $('#content').val(); // 将评论内容存入变量
-                if (name && email && content) { // 如果所有内容都已填写
-                    $.post('{% url 'comment' %}', { // 用post方法提交请求
-                        'article': {{ post.id }}, // 请求中包含的参数字典
-                        'reply': reply,
-                        'name': name,
-                        'email': email,
-                        'content': content
-                    }, function (result) { // 回调函数获取返回结果
-                        if (result === '200') { // 如果返回评论成功编码
-                            $('#comment_message').css({color: "green"}).html('评论成功！'); // 设置提示元素的样式与文字
-                        } else {
-                            $('#comment_message').css({color: "red"}).html('评论失败！');
-                        }
-                    });
-                    $('#comment_message').removeAttr('hidden'); // 去除提示元素的隐藏属性将提示显示在页面
-                    setTimeout(function () { // 设置超时后执行的函数
-                        location.reload() // 重载页面内容
-                    }, 1000); // 设置超时时长
-                } else { // 如果不是所有内容都已填写
-                    $('#comment_message').removeAttr('hidden').html('请检查填写的内容！').css({color: "red"});
-                    // 去除提示元素的隐藏属性将提示显示在页面，同时设置提示的样式与文字
-                }
-            });
-        });
-    </script>
 
 {% endblock %}
