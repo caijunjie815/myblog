@@ -26,20 +26,32 @@
     <hr style="margin-bottom: 3rem">
     <!-- comments block -->
     <div class="blog-comments">
-        <h2>Comments</h2>
+        <h2 id="publish">Comments</h2>
         <hr>
+        <!-- a comment form created by ModelFrom module -->
         <div id="respond" class="comment-respond">
-            <h3 id="publish">Leave a message</h3>
-            <form action="#publish" method="post" id="commentform" class="comment-form">
-
+            <h3>Leave a message</h3>
+            <form action="{% url 'comment' %}" method="post" id="commentform" class="comment-form">
+                <input type="hidden" id="reply" name="reply" value="0">
+                <!-- hidden element, used to record replied user. -->
                 <p class="comment-notes"><span id="email-notes">Your email address will not be published.</span>
                     Required fields are marked <span class="required">*</span></p>
-                <input type="hidden" id="reply" name="reply" value="0">
+                {% csrf_token %}
                 <div class="form-group comment-form-author">{{ comment_form.name }}</div>
                 <div class="form-group comment-form-email">{{ comment_form.email }}</div>
                 <div class="form-group comment-form-comment">{{ comment_form.content }}</div>
+                <div class="form-group comment-form-comment">
+                    <input type="hidden" id="article" name="article" value="{{ object.id }}">
+                </div>
+                <div class="form-group comment-form-comment">
+
+                    <input type="hidden" id="reply" name="reply" value="0">
+                </div>
                 <p class="form-submit"><input name="submit" type="submit" id="submit_comment" class="submit"
                                               value="Post Comment"></p>
+                {% if result %}
+                    <div class="alert alert-warning"><a>Please check your input!</a></div>
+                {% endif %}
             </form>
         </div>
         <hr>
@@ -49,7 +61,7 @@
                     <p class="comment-nav">{{ comment.name }} ({{ comment.posted_time }})</p>
                     <div class="comment-content" style="position: relative;">{{ comment.content }}
                         <a href="#publish" style="position: absolute; right: 0;bottom: 0;"
-                           onclick="reply('{{ comment.name }}',{{ comment.id }})">[reply]</a>
+                           onclick="reply('{{ comment.name }}',{{ comment.id }})">reply</a>
                     </div>
                 </div>
             {% else %}
@@ -58,7 +70,7 @@
                         ({{ comment.posted_time }})</p>
                     <div class="comment-content" style="position: relative;">{{ comment.content }}
                         <a href="#publish" style="position: absolute; right: 0;bottom: 0;"
-                           onclick="reply('{{ comment.name }}',{{ comment.id }})">[reply]</a>
+                           onclick="reply('{{ comment.name }}',{{ comment.id }})">reply</a>
                     </div>
                 </div>
             {% endif %}
@@ -66,5 +78,10 @@
             <a>No comments yet!</a>
         {% endfor %}
     </div>
-
+    <script>
+        function reply(comment_name, comment_id) {
+            $('#content').attr('placeholder', 'Reply to ' + comment_name + ':'); // 设置内容输入框的提示
+            $('#reply').val(comment_id) //设置隐藏元素的值为评论目标的id
+        }
+    </script>
 {% endblock %}

@@ -66,7 +66,7 @@ class PostView(DetailView):  # view an article's all content.
         comments = Comments.objects.filter(article=self.kwargs['pk'])  # query comments by post id.
         context['comment_list'] = self.comment_sort(comments)
 
-        # pass comment forms to template
+        # pass comment form to template
         comment_form = CommentForm()
         context['comment_form'] = comment_form
 
@@ -93,3 +93,23 @@ class Search(ListView):
 
 def about(request):
     return render(request, 'about.html')
+
+
+def post_comment(request):
+    if request.method == 'POST':  # 如果是post请求
+        comment = Comments()  # 创建评论对象
+        comment.article = Post.objects.get(id=request.POST.get('article'))  # 设置评论所属的文章
+        if request.POST.get('reply') != '0':  # 如果回复的不是文章而是他人评论
+            comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # 设置回复的目标评论
+        form = CommentForm(request.POST, instance=comment)  # 将用户的输入和评论对象结合为完整的表单
+        if form.is_valid():  # 如果表单数据校验有效
+            try:
+                form.save()  # 将表单数据存入数据库
+                return render(request, 'article.html')  # 返回提交结果到页面
+            except:  # 如果发生异常
+                result = '100'  # 提交结果为失败编码
+        else:  # 如果表单数据校验无效
+            result = '100'  # 提交结果为失败编码
+    else:  # 如果不是post请求
+        result = '100'
+    return render(request, 'article.html', locals())  # 返回提交结果到页面
