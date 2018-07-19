@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponse
 from django.views.generic import ListView, DetailView
 
 from blog.models import Post, Category, Comments
@@ -105,11 +105,10 @@ def post_comment(request):
         if form.is_valid():  # 如果表单数据校验有效
             try:
                 form.save()  # 将表单数据存入数据库
-                return render(request, 'article.html')  # 返回提交结果到页面
+                return redirect('article', comment.article.id)  # 返回提交结果到页面
             except:  # 如果发生异常
-                result = '100'  # 提交结果为失败编码
+                return HttpResponse('AN EXCEPTION OCCURS!')  # 提交结果为失败编码
         else:  # 如果表单数据校验无效
-            result = '100'  # 提交结果为失败编码
+            return HttpResponse('FORM IS NOT VALID!')  # 提交结果为失败编码
     else:  # 如果不是post请求
-        result = '100'
-    return render(request, 'article.html', locals())  # 返回提交结果到页面
+        return HttpResponse('Not a POST request!')
