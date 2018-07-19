@@ -12,7 +12,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
 @admin.register(Comments)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('name', "article", 'posted_time', 'content')
+    list_display = ('name', "article", 'posted_time', 'content', 'reply')
 
 
 admin.site.register((Category, Tag))
