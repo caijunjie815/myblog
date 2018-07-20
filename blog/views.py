@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 
 from blog.models import Post, Category, Comments
@@ -96,19 +96,33 @@ def about(request):
 
 
 def post_comment(request):
-    if request.method == 'POST':  # 如果是post请求
-        comment = Comments()  # 创建评论对象
-        comment.article = Post.objects.get(id=request.POST.get('article'))  # 设置评论所属的文章
-        if request.POST.get('reply') != '0':  # 如果回复的不是文章而是他人评论
-            comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # 设置回复的目标评论
-        form = CommentForm(request.POST, instance=comment)  # 将用户的输入和评论对象结合为完整的表单
-        if form.is_valid():  # 如果表单数据校验有效
+    if request.method == 'POST':  # if a post request
+        comment = Comments()  # create a instance of Comments class
+        comment.article = Post.objects.get(id=request.POST.get('article'))  # get article id
+        if request.POST.get('reply') != '0':  # if not reply to the article
+            comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # get reply objective
+        form = CommentForm(request.POST,
+                           instance=comment)  # combine input form data and the instance to create a whole CommentForm instance
+        if form.is_valid():  # check form is valid
             try:
-                form.save()  # 将表单数据存入数据库
-                return redirect('article', comment.article.id)  # 返回提交结果到页面
-            except:  # 如果发生异常
-                return HttpResponse('AN EXCEPTION OCCURS!')  # 提交结果为失败编码
-        else:  # 如果表单数据校验无效
-            return HttpResponse('FORM IS NOT VALID!')  # 提交结果为失败编码
-    else:  # 如果不是post请求
-        return HttpResponse('Not a POST request!')
+                form.save()  # save posted form date into database
+                return redirect('article', comment.article.id,
+                                permanent=True, result='s')  # redirect to the article page with article id
+            except:
+                result = 'AN EXCEPTION OCCURS!'
+        else:  # if form is not valid
+            result = 'FORM IS NOT VALID!'
+        post_id = request.POST.get('article')
+        object = Post()
+        category_id = object.category.id
+        comments = Comments.objects.filter(article=post_id)  # query comments by post id.
+        post_view = PostView()
+        comment_list = post_view.comment_sort(comments)
+        comment_form = CommentForm()
+        return render(request, 'article.html', context={'result': result,
+                                                        'comment_list': comment_list,
+                                                        'comment_form': comment_form,
+                                                        'category_id': category_id})
+    else:  # if not a post request
+        result = 'Not a POST request!'
+    return render(request, 'article.html', context={'result': result})

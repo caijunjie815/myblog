@@ -10,7 +10,7 @@
     </div>
     <hr>
     <div class="blog-category">
-        <p>Categories: <a href="{% url 'category' object.category.id %}">{{ object.category }}</a>
+        <p>Categories: <a href="{% url 'category' object.category.id as category_id %}">{{ object.category }}</a>
         </p>
     </div>
     <div class="blog-tag">
@@ -47,6 +47,10 @@
                 </div>
                 <p class="form-submit"><input name="submit" type="submit" id="submit_comment" class="submit"
                                               value="Post Comment"></p>
+                {% if result %}
+                    <div id="comment_message" style="margin-top: 10px;vertical-align: middle;color: green">{{ result }}
+                    </div>
+                {% endif %}
             </form>
         </div>
         <hr>
