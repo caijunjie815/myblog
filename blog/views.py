@@ -1,6 +1,6 @@
 from django.db.models import Q
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView, FormView
 
 from blog.models import Post, Category, Comments
 from .forms import CommentForm
@@ -95,34 +95,23 @@ def about(request):
     return render(request, 'about.html')
 
 
-def post_comment(request):
-    if request.method == 'POST':  # if a post request
-        comment = Comments()  # create a instance of Comments class
-        comment.article = Post.objects.get(id=request.POST.get('article'))  # get article id
-        if request.POST.get('reply') != '0':  # if not reply to the article
-            comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # get reply objective
-        form = CommentForm(request.POST,
-                           instance=comment)  # combine input form data and the instance to create a whole CommentForm instance
-        if form.is_valid():  # check form is valid
-            try:
-                form.save()  # save posted form date into database
-                return redirect('article', comment.article.id,
-                                permanent=True, result='s')  # redirect to the article page with article id
-            except:
-                result = 'AN EXCEPTION OCCURS!'
-        else:  # if form is not valid
-            result = 'FORM IS NOT VALID!'
-        post_id = request.POST.get('article')
-        object = Post()
-        category_id = object.category.id
-        comments = Comments.objects.filter(article=post_id)  # query comments by post id.
-        post_view = PostView()
-        comment_list = post_view.comment_sort(comments)
-        comment_form = CommentForm()
-        return render(request, 'article.html', context={'result': result,
-                                                        'comment_list': comment_list,
-                                                        'comment_form': comment_form,
-                                                        'category_id': category_id})
-    else:  # if not a post request
-        result = 'Not a POST request!'
-    return render(request, 'article.html', context={'result': result})
+class PostForm(FormView):
+    def post_comment(self, request):
+        if request.method == 'POST':  # if a post request
+            comment = Comments()  # create a instance of Comments class
+            comment.article = Post.objects.get(id=request.POST.get('article'))  # get article id
+            if request.POST.get('reply') != '0':  # if not reply to the article
+                comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # get reply objective
+            form = CommentForm(request.POST, instance=comment)
+            # combine input form data and the instance to create a whole CommentForm instance
+            if form.is_valid():  # check form is valid
+                try:
+                    form.save()  # save posted form date into database
+                    result = 'Successfully comment!'
+                except:
+                    result = 'AN EXCEPTION OCCURS!'
+            else:  # if form is not valid
+                result = 'FORM IS NOT VALID!'
+            return result
+        else:
+            pass

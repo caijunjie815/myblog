@@ -28,5 +28,5 @@ urlpatterns = [
     # <int:category> is the keywords matching self.kwargs['category'] in views.py
     path('search/', Search.as_view(), name='search'),
     path('article/<int:pk>', PostView.as_view(), name='article'),
-    path('comment/', blog_views.post_comment, name='comment')
+    # path('comment/', blog_views.post_comment, name='comment')
 ]
