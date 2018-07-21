@@ -64,6 +64,16 @@ class PostView(DetailView):  # view an article's all content.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # get session and save into context.
+        try:
+            context['session'] = {
+                'name': self.request.session['name'],
+                'email': self.request.session['email'],
+                'content': self.request.session['content']
+            }
+        except:  # do nothing if has exception
+            pass
+
         # list comments
         comments = Comments.objects.filter(article=self.kwargs['pk'])  # query comments by post id.
         context['comment_list'] = self.comment_sort(comments)
@@ -107,6 +117,10 @@ def post_comment(request):
     :param request: http POST request
     :return: redirected page if valid; otherwise, previous page with prompt message
     """
+    # session input to auto-fill
+    request.session['name'] = request.POST.get('name')
+    request.session['email'] = request.POST.get('email')
+
     comment = Comments()  # create a instance of Comments class
     article_id = request.POST.get('article')  # get article id
 
@@ -119,8 +133,10 @@ def post_comment(request):
         try:
             form.save()  # save posted form date into database
             messages.success(request, 'Your comment was added successfully!')
+            request.session['content'] = ''  # save null into session if successful
             return redirect('article', pk=article_id)
         except:
+            request.session['content'] = request.POST.get('content')  # save input content in session if fail
             messages.warning(request, 'AN EXCEPTION OCCURS!')
     messages.error(request, 'Please correct your error above!')  # if not a valid form
 
