@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from blog import views as blog_views
 from blog.views import *
@@ -28,5 +28,6 @@ urlpatterns = [
     # <int:category> is the keywords matching self.kwargs['category'] in views.py
     path('search/', Search.as_view(), name='search'),
     path('article/<int:pk>', PostView.as_view(), name='article'),
-    path('comment/', blog_views.post_comment, name='comment')
+    path('comment/', blog_views.post_comment, name='comment'),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]

@@ -4,8 +4,8 @@
     <!-- post block -->
     <div class="blog-post">
         <h3 class="blog-post-title"><a>{{ object.title }}</a></h3>
-        <p class="blog-post-meta">{{ object.posted_time }} by <a href="#">{{ object.author }}</a>
-        </p>
+        <p class="blog-post-meta">{{ object.posted_time }} by <a href="#">{{ object.author }}</a></p>
+        <hr>
         <p>{{ object.content|safe }}</p>
     </div>
     <hr>
@@ -15,7 +15,7 @@
         </p>
     </div>
     <div class="blog-tag">
-        <p>Reading more about
+        <p>Tags:
             {% for tag in post.tag.all %}
                 <a href="#">{{ tag }}</a>
                 {% if not forloop.last %}

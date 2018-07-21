@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
-    'django.contrib.sitemaps'
+    'django.contrib.sitemaps',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 MIDDLEWARE = [
@@ -119,3 +121,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# media configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CKEDITOR_UPLOAD_PATH = "upload/"
+
+CKEDITOR_CONFIGS = {
+    'default': {  # 添加默认配置
+    },
+    'mycfg': {  # 添加自定义配置
+        'skin': 'moono',  # 设置皮肤
+        'toolbar': 'full',  # 设置工具栏加载全部功能
+        'width': '100%',  # 设置宽度
+    },
+}

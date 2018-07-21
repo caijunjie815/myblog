@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -25,7 +26,7 @@ class Post(models.Model):
     id = models.AutoField(primary_key=True)
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=100, unique=True)
-    content = models.TextField()
+    content = RichTextField(config_name='mycfg')
     posted_time = models.DateField(auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.SET_DEFAULT, default=1)
     tag = models.ManyToManyField(Tag)
