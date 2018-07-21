@@ -9,21 +9,26 @@ from .forms import CommentForm
 
 
 # Create your views here.
-class PostList(ListView):  # index.html: list all posts ordered by posted time.
+class PostList(ListView):
+    """
+    list view for index.html
+    """
     model = Post
     template_name = 'index.html'
     queryset = Post.objects.all().order_by('-id')
     paginate_by = 5  # set numbers of posts per page.
 
 
-class CategoryList(ListView):  # category.html :list all posts in a given category ordered by posted time.
+class CategoryList(ListView):
+    """
+    list all posts in a given category ordered by posted time.
+    """
     model = Post
     template_name = 'category.html'
     paginate_by = 5
 
     def get_queryset(self):  # get queryset
-        return Post.objects.filter(category=self.kwargs['category']).order_by(
-            '-id')  # use passed category id to obtain posts.
+        return Post.objects.filter(category=self.kwargs['category']).order_by('-id')
 
     def get_context_data(self, **kwargs):  # pass extra arguments to template.
         context = super().get_context_data(**kwargs)
@@ -32,29 +37,40 @@ class CategoryList(ListView):  # category.html :list all posts in a given catego
         return context
 
 
-class PostView(DetailView):  # view an article's all content.
+class PostView(DetailView):
+    """
+    display an article's detail.
+    """
     model = Post
     template_name = 'article.html'
 
     # define comment function
-    def comment_sort(self, comments):  # sort comments which will be display in template.
+    def comment_sort(self, comments):
+        """
+        sort comments in a parent-kid recursive structure.
+        :param comments: all comments belong to an article
+        :return: sorted comment list of an article
+        """
         self.comment_list = []  # the final list of comments
         self.top_level = []  # save top comments in a list
         self.sub_level = {}  # save kid comments in a dict.
-        # classify comments into top comment list or kid comment dictionary.
         for comment in comments:
             if comment.reply == None:
                 self.top_level.append(comment)
             else:
-                self.sub_level.setdefault(comment.reply.id, []).append(comment)  # key=parent's id, value= this comment.
+                self.sub_level.setdefault(comment.reply.id, []).append(comment)  # key=parent's id, value= kid comment.
         for top_comment in self.top_level:
             self.format_show(top_comment)  # call a recursive function
         return self.comment_list  # return sorted list of comments.
 
-    def format_show(self, comment):  # recursive function to save comment, followed by its kid comment.
+    def format_show(self, comment):
+        """
+        :param comment: a parent comment
+        :return: the list of parent comment and its kid comments
+        """
         self.comment_list.append(comment)
         try:
-            self.kids = self.sub_level[comment.id]  # obtain all replay in a comment.
+            self.kids = self.sub_level[comment.id]  # obtain all replay belongs to a comment.
         except KeyError:  # if no replay
             pass  # end recursive
         else:
