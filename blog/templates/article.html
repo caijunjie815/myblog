@@ -10,7 +10,8 @@
     </div>
     <hr>
     <div class="blog-category">
-        <p>Categories: <a href="{% url 'category' object.category.id %}">{{ object.category }}</a>
+        {% url 'category' object.category.id as category_id %}
+        <p>Categories: <a href="{{ category_id }}">{{ object.category }}</a>
         </p>
     </div>
     <div class="blog-tag">
@@ -31,7 +32,7 @@
         <!-- a comment form created by ModelFrom module -->
         <div id="respond" class="comment-respond">
             <h3>Leave a message</h3>
-            <form action="#" method="post" id="commentform" class="comment-form">
+            <form action="{% url 'comment' %}" method="post" id="commentform" class="comment-form">
                 <!-- hidden element, used to record replied user. -->
                 <p class="comment-notes"><span id="email-notes">Your email address will not be published.</span>
                     Required fields are marked <span class="required">*</span></p>
@@ -45,12 +46,12 @@
                 <div class="form-group comment-form-comment">
                     <input type="hidden" id="reply" name="reply" value="0">
                 </div>
-                <p class="form-submit"><input name="submit" type="submit" id="submit_comment" class="submit"
-                                              value="Post Comment"></p>
-                {% if result %}
-                    <div id="comment_message" style="margin-top: 10px;vertical-align: middle;color: green">{{ result }}
-                    </div>
-                {% endif %}
+                <p class="form-submit">
+                    <input name="submit" type="submit" id="submit_comment" class="submit" value="Post Comment">
+                </p>
+
+                <!-- message flash block-->
+                {% include 'messages.html' %}
             </form>
         </div>
         <hr>

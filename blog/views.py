@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.db.models import Q
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, FormView
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
+from django.views.generic import ListView, DetailView
 
 from blog.models import Post, Category, Comments
 from .forms import CommentForm
@@ -95,23 +97,34 @@ def about(request):
     return render(request, 'about.html')
 
 
-class PostForm(FormView):
-    def post_comment(self, request):
-        if request.method == 'POST':  # if a post request
-            comment = Comments()  # create a instance of Comments class
-            comment.article = Post.objects.get(id=request.POST.get('article'))  # get article id
-            if request.POST.get('reply') != '0':  # if not reply to the article
-                comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # get reply objective
-            form = CommentForm(request.POST, instance=comment)
-            # combine input form data and the instance to create a whole CommentForm instance
-            if form.is_valid():  # check form is valid
-                try:
-                    form.save()  # save posted form date into database
-                    result = 'Successfully comment!'
-                except:
-                    result = 'AN EXCEPTION OCCURS!'
-            else:  # if form is not valid
-                result = 'FORM IS NOT VALID!'
-            return result
-        else:
-            pass
+@require_POST  # only accept a POST request; otherwise return a  django.http.HttpResponseNotAllowed
+def post_comment(request):
+    """
+    function to handle post request from comment form.
+    if valid form, save form data into database and return a redirected page.
+    if not, return previous page.
+
+    :param request: http POST request
+    :return: redirected page if valid; otherwise, previous page with prompt message
+    """
+    comment = Comments()  # create a instance of Comments class
+    article_id = request.POST.get('article')  # get article id
+
+    comment.article = Post.objects.get(id=article_id)
+    if request.POST.get('reply') != '0':  # if reply to a comment
+        comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # get reply objective
+    form = CommentForm(request.POST, instance=comment)
+    # combine input form data and the instance to create a whole CommentForm instance
+    if form.is_valid():  # if form is not valid
+        try:
+            form.save()  # save posted form date into database
+            messages.success(request, 'Your comment was added successfully!')
+            return redirect('article', pk=article_id)
+        except:
+            messages.warning(request, 'AN EXCEPTION OCCURS!')
+    messages.error(request, 'Please correct your error above!')  # if not a valid form
+
+
+class NavList(ListView):  # list category names in navigation bar
+    model = Category
+    template_name = 'nav.html'

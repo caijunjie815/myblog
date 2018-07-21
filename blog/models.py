@@ -7,6 +7,9 @@ class Category(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100, unique=True, db_index=True)
 
+    def get_absolute_url(self):
+        pass
+
     def __str__(self):
         return self.name
 
