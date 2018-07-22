@@ -3,7 +3,7 @@
 {% block main_content %}
     <!-- post block -->
     <div class="blog-post">
-        <h3 class="blog-post-title"><a>{{ object.title }}</a></h3>
+        <h3 class="blog-post-title"><a>{{ object.title|title }}</a></h3>
         <p class="blog-post-meta">{{ object.posted_time }} by <a href="#">{{ object.author }}</a></p>
         <hr>
         <p>{{ object.content|safe }}</p>
@@ -25,7 +25,10 @@
         </p>
     </div>
     <hr style="margin-bottom: 3rem">
-    <!-- comments block -->
+    <!-- comments block --> {# or use line comment #}
+    {% comment %}
+    or a block commnet tag.
+    {% endcomment %}
     <div class="blog-comments">
         <h2 id="publish">Comments</h2>
         <hr>
