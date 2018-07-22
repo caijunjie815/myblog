@@ -57,15 +57,19 @@ class PostView(DetailView):
         sort comments in a parent-kid recursive structure.
         :param comments: all comments belong to an article
         :return: sorted comment list of an article
+
+        """
         """
         for comment in comments:
             if comment.reply is None:
                 self.top_level.append(comment)
             else:
-                self.sub_level.setdefault(comment.reply.id, []).append(
-                    comment)  # key=parent's id, value= kid comment.
-        for top_comment in self.top_level:
-            self.format_show(top_comment)  # call a recursive function
+                self.sub_level.setdefault(comment.reply.id, []).append(comment)  # key=parent's id, value= kid comment.
+        """
+        # use list generate expression to place instead of codes in block quotes above.
+        [self.top_level.append(comment) for comment in comments if comment.reply is None]
+        [self.sub_level.setdefault(comment.reply.id, []).append(comment) for comment in comments if comment.reply]
+        [self.format_show(top_comment) for top_comment in self.top_level]  # call a recursive function
         return self.comment_list  # return sorted list of comments.
 
     def format_show(self, comment):
@@ -79,8 +83,7 @@ class PostView(DetailView):
         except KeyError:  # if no replay
             return self.comment_list  # end recursive
         else:
-            for kid in kids:
-                self.format_show(kid)  # next recursive
+            [self.format_show(kid) for kid in kids]  # next recursive
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -40,7 +40,7 @@ class Comments(models.Model):
     name = models.CharField('Nickname', max_length=20)
     email = models.EmailField()
     content = models.TextField()
-    posted_time = models.DateField(auto_now=True)
+    posted_time = models.DateTimeField(auto_now=True)
     article = models.ForeignKey(Post, on_delete=models.CASCADE)
     reply = models.ForeignKey('self', on_delete=models.DO_NOTHING, null=True, blank=True)
 
