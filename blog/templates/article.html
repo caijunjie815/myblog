@@ -10,7 +10,7 @@
     </div>
     <hr>
     <div class="blog-category">
-        {% url 'category' object.category.id as category_id %}
+        {% url 'blog:category' object.category.id as category_id %}
         <p>Categories: <a href="{{ category_id }}">{{ object.category }}</a>
         </p>
     </div>
@@ -32,7 +32,7 @@
         <!-- a comment form created by ModelFrom module -->
         <div id="respond" class="comment-respond">
             <h3>Leave a message</h3>
-            <form action="{% url 'comment' %}" method="post" id="commentform" class="comment-form">
+            <form action="{% url 'blog:comment' %}" method="post" id="commentform" class="comment-form">
                 <!-- hidden element, used to record replied user. -->
                 <p class="comment-notes"><span id="email-notes">Your email address will not be published.</span>
                     Required fields are marked <span class="required">*</span></p>

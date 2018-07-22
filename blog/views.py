@@ -148,9 +148,9 @@ def post_comment(request):
     if form.is_valid():  # if form is not valid
         try:
             form.save()  # save posted form date into database
-            messages.success(request, 'Your comment was added successfully!')
             request.session['content'] = ''  # save null into session if successful
-            return redirect('article', pk=article_id)
+            messages.success(request, 'Your comment was added successfully!')
+            return redirect('blog:article', pk=article_id)
         except:
             request.session['content'] = request.POST.get('content')  # save input content in session if fail
             messages.warning(request, 'AN EXCEPTION OCCURS!')

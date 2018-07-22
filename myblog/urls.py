@@ -16,18 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from blog import views as blog_views
 from blog.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('about/', blog_views.about),
-    path('', PostList.as_view()),
-    path('category/<int:category>', CategoryList.as_view(), name='category'),
-    # name is mapping this url, which can be used in templates
-    # <int:category> is the keywords matching self.kwargs['category'] in views.py
-    path('search/', Search.as_view(), name='search'),
-    path('article/<int:pk>', PostView.as_view(), name='article'),
-    path('comment/', blog_views.post_comment, name='comment'),
+    path('', include('blog.urls', namespace='blog')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]

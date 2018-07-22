@@ -4,7 +4,7 @@
     <h3 class="pb-3 mb-4 font-italic border-bottom">Category - {{ category }}</h3>
     {% for post in page_obj.object_list %}
         <div class="blog-post">
-            {% url 'article' post.id as post_id %}
+            {% url 'blog:article' post.id as post_id %}
             <h3 class="blog-post-title"><a href="{{ post_id }}">{{ post.title }}</a></h3>
             <p class="blog-post-meta">{{ post.posted_time }} by <a href="#">{{ post.author }}</a></p>
             <p>{{ post.content|truncatechars_html:200|striptags }}</p>
