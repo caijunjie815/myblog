@@ -44,10 +44,12 @@ class PostView(DetailView):
     model = Post
     template_name = 'article.html'
 
+    # inheritance Class DetailView and extend to define new attributes
     def __init__(self):
-        self.__comment_list = []  # the final list of comments
-        self.__top_level = []  # save top comments in a list
-        self.__sub_level = {}
+        self.comment_list = []  # the final list of comments
+        self.top_level = []  # save top comments in a list
+        self.sub_level = {}
+        super().__init__()
 
     # define comment function
     def comment_sort(self, comments):
@@ -58,24 +60,24 @@ class PostView(DetailView):
         """
         for comment in comments:
             if comment.reply is None:
-                self.__top_level.append(comment)
+                self.top_level.append(comment)
             else:
-                self.__sub_level.setdefault(comment.reply.id, []).append(
+                self.sub_level.setdefault(comment.reply.id, []).append(
                     comment)  # key=parent's id, value= kid comment.
-        for top_comment in self.__top_level:
+        for top_comment in self.top_level:
             self.format_show(top_comment)  # call a recursive function
-        return self.__comment_list  # return sorted list of comments.
+        return self.comment_list  # return sorted list of comments.
 
     def format_show(self, comment):
         """
         :param comment: a parent comment
         :return: the list of parent comment and its kid comments
         """
-        self.__comment_list.append(comment)
+        self.comment_list.append(comment)
         try:
-            kids = self.__sub_level[comment.id]  # obtain all replay belongs to a comment.
+            kids = self.sub_level[comment.id]  # obtain all replay belongs to a comment.
         except KeyError:  # if no replay
-            return self.__comment_list  # end recursive
+            return self.comment_list  # end recursive
         else:
             for kid in kids:
                 self.format_show(kid)  # next recursive
