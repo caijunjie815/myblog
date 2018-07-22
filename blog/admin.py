@@ -7,12 +7,12 @@ from blog.models import *
 
 @admin.register(Post)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'posted_time')
+    list_display = ('title', 'author', 'category', 'posted_time')
 
 
 @admin.register(Comments)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('name', "article", 'posted_time', 'content', 'reply')
+    list_display = ("article", 'name', 'posted_time', 'content', 'reply')
 
 
 admin.site.register((Category, Tag))

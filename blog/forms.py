@@ -13,3 +13,7 @@ class CommentForm(forms.ModelForm):
             'content': forms.Textarea(
                 attrs={'id': 'content', 'class': "form-control", 'placeholder': 'Messages...', 'cols': 45, 'rows': 4})
         }
+
+
+class SignInForm(forms.ModelForm):
+    pass
