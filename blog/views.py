@@ -44,6 +44,11 @@ class PostView(DetailView):
     model = Post
     template_name = 'article.html'
 
+    def __init__(self):
+        self.__comment_list = []  # the final list of comments
+        self.__top_level = []  # save top comments in a list
+        self.__sub_level = {}
+
     # define comment function
     def comment_sort(self, comments):
         """
@@ -51,30 +56,28 @@ class PostView(DetailView):
         :param comments: all comments belong to an article
         :return: sorted comment list of an article
         """
-        self.comment_list = []  # the final list of comments
-        self.top_level = []  # save top comments in a list
-        self.sub_level = {}  # save kid comments in a dict.
         for comment in comments:
-            if comment.reply == None:
-                self.top_level.append(comment)
+            if comment.reply is None:
+                self.__top_level.append(comment)
             else:
-                self.sub_level.setdefault(comment.reply.id, []).append(comment)  # key=parent's id, value= kid comment.
-        for top_comment in self.top_level:
+                self.__sub_level.setdefault(comment.reply.id, []).append(
+                    comment)  # key=parent's id, value= kid comment.
+        for top_comment in self.__top_level:
             self.format_show(top_comment)  # call a recursive function
-        return self.comment_list  # return sorted list of comments.
+        return self.__comment_list  # return sorted list of comments.
 
     def format_show(self, comment):
         """
         :param comment: a parent comment
         :return: the list of parent comment and its kid comments
         """
-        self.comment_list.append(comment)
+        self.__comment_list.append(comment)
         try:
-            self.kids = self.sub_level[comment.id]  # obtain all replay belongs to a comment.
+            kids = self.__sub_level[comment.id]  # obtain all replay belongs to a comment.
         except KeyError:  # if no replay
-            pass  # end recursive
+            return self.__comment_list  # end recursive
         else:
-            for kid in self.kids:
+            for kid in kids:
                 self.format_show(kid)  # next recursive
 
     def get_context_data(self, **kwargs):
@@ -87,7 +90,7 @@ class PostView(DetailView):
                 'email': self.request.session['email'],
                 'content': self.request.session['content']
             }
-        except:  # do nothing if has exception
+        except Exception:  # do nothing if has exception
             pass
 
         # list comments
@@ -151,7 +154,7 @@ def post_comment(request):
             request.session['content'] = ''  # save null into session if successful
             messages.success(request, 'Your comment was added successfully!')
             return redirect('blog:article', pk=article_id)
-        except:
+        except Exception:
             request.session['content'] = request.POST.get('content')  # save input content in session if fail
             messages.warning(request, 'AN EXCEPTION OCCURS!')
     messages.error(request, 'Please correct your error above!')  # if not a valid form
