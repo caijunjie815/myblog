@@ -3,15 +3,7 @@
 {% block main_content %}
     <h3 class="pb-3 mb-4 font-italic border-bottom">Post related to "{{ key }}":</h3>
     {% for post in page_obj.object_list %}
-        <div class="blog-post">
-            <!-- add links of post.title and post.author to the article.html -->
-            {% url 'blog:article' post.id as post_id %}
-            <h3 class="blog-post-title"><a href="{{ post_id }}">{{ post.title }}</a></h3>
-            <p class="blog-post-meta">{{ post.posted_time }} by <a href="#">{{ post.author }}</a></p>
-            <p>{{ post.content|truncatechars_html:200|striptags }}</p>
-            <a class="btn" href="{{ post_id }}">Read >></a>
-        </div>
-        <hr class="featurette-divider">
+        {% include 'post_list_body.html' %}
     {% empty %}
         <h3>No post about "{{ key }}" !</h3>
     {% endfor %}
