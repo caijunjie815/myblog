@@ -27,7 +27,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=100, unique=True)
     content = RichTextField(config_name='mycfg')
-    posted_time = models.DateField(auto_now=True)
+    posted_time = models.DateField('date posted', auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.SET_DEFAULT, default=1)
     tag = models.ManyToManyField(Tag)
 

@@ -11,7 +11,7 @@ urlpatterns = [
     # name is mapping this url, which can be used in templates
     # <int:category> is the keywords matching self.kwargs['category'] in views.py
     path('search/', Search.as_view(), name='search'),
-    path('<int:pk>/', PostView.as_view(), name='article'),
-    path('<int:article_id>/comment/', blog_views.post_comment, name='comment'),
+    path('article/<int:pk>/', PostView.as_view(), name='article'),
+    path('article/<int:article_id>/comment/', blog_views.post_comment, name='comment'),
     path('about/', blog_views.about, name='about'),
 ]
