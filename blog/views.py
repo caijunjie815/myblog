@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404, get_list_or_40
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView
 
-from blog.models import Post, Category, Comments
+from blog.models import Post, Category, Comments, Tag
 from .forms import CommentForm
 
 
@@ -110,14 +110,13 @@ class Search(ListView):
 
     def get_queryset(self):
         key = self.request.GET['key']
-        if key:
-            return Post.objects.filter(Q(title__icontains=key) | Q(content__icontains=key)).order_by('-id')
-        else:
-            return None
+        return Post.objects.filter(Q(title__icontains=key) | Q(content__icontains=key)).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(Search, self).get_context_data(**kwargs)
         context['key'] = self.request.GET['key']
+        context['tags'] = get_list_or_404(Tag)
+        context['categories'] = get_list_or_404(Category)
         return context
 
 
