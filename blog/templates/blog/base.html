@@ -14,18 +14,18 @@
 </head>
 <body onload="onload()">
 <!-- navigation block -->
-{% include 'nav.html' %}
+{% include 'blog/nav.html' %}
 <!-- main block -->
 <main role="main" class="container">
     <div class="row" style="padding-top: 40px">
         <div class="col-md-8 blog-main">
             {% block main_content %}This is main content!{% endblock %}
         </div>
-        {% include 'sidebar.html' %}
+        {% include 'blog/sidebar.html' %}
     </div>
     <hr class="featurette-divider">
     <!-- footer block -->
-    {% include 'bottom.html' %}
+    {% include 'blog/bottom.html' %}
 </main>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

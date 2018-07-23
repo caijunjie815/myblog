@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'blog/base.html' %}
 {% block title %}Search{% endblock %}
 {% block main_content %}
     <h3 class="pb-3 mb-4 font-italic border-bottom">Post related to "{{ key }}":</h3>
     {% for post in page_obj.object_list %}
-        {% include 'post_list_body.html' %}
+        {% include 'blog/post_list_body.html' %}
     {% empty %}
         <h3>No post about "{{ key }}" !</h3>
     {% endfor %}
-    {% include 'paginator.html' %}
+    {% include 'blog/paginator.html' %}
 {% endblock %}

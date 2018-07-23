@@ -14,7 +14,7 @@ class PostList(ListView):
     list view for index.html
     """
     model = Post
-    template_name = 'index.html'
+    template_name = 'blog/index.html'
     queryset = Post.objects.all().order_by('-id')
     paginate_by = 5  # set numbers of posts per page.
 
@@ -24,7 +24,7 @@ class CategoryList(ListView):
     list all posts in a given category ordered by posted time.
     """
     model = Post
-    template_name = 'category.html'
+    template_name = 'blog/category.html'
     paginate_by = 5
 
     def get_queryset(self):  # get queryset
@@ -42,7 +42,7 @@ class PostView(DetailView):
     display an article's detail.
     """
     model = Post
-    template_name = 'article.html'
+    template_name = 'blog/article.html'
 
     # inheritance Class DetailView and extend to define new attributes
     def __init__(self):
@@ -111,7 +111,7 @@ class PostView(DetailView):
 
 class Search(ListView):
     model = Post
-    template_name = 'search.html'
+    template_name = 'blog/search.html'
     paginate_by = 5
 
     def get_queryset(self):
@@ -128,11 +128,11 @@ class Search(ListView):
 
 
 def about(request):
-    return render(request, 'about.html')
+    return render(request, 'blog/about.html')
 
 
 @require_POST  # only accept a POST request; otherwise return a  django.http.HttpResponseNotAllowed
-def post_comment(request):
+def post_comment(request, articel_id):
     """
     function to handle post request from comment form.
     if valid form, save form data into database and return a redirected page.
@@ -146,11 +146,11 @@ def post_comment(request):
     request.session['email'] = request.POST.get('email')
 
     comment = Comments()  # create a instance of Comments class
-    article_id = request.POST.get('article')  # get article id
+    # article_id = request.POST.get('article')  # get article id
 
-    comment.article = Post.objects.get(id=article_id)
+    comment.article = Post.objects.get(pk=articel_id)
     if request.POST.get('reply') != '0':  # if reply to a comment
-        comment.reply = Comments.objects.get(id=request.POST.get('reply'))  # get reply objective
+        comment.reply = Comments.objects.get(pk=request.POST.get('reply'))  # get reply objective
     form = CommentForm(request.POST, instance=comment)
     # combine input form data and the instance to create a whole CommentForm instance
     if form.is_valid():  # if form is not valid
@@ -158,7 +158,7 @@ def post_comment(request):
             form.save()  # save posted form date into database
             request.session['content'] = ''  # save null into session if successful
             messages.success(request, 'Your comment was added successfully!')
-            return redirect('blog:article', pk=article_id)
+            return redirect('blog:article', articel_id)
         except Exception:
             request.session['content'] = request.POST.get('content')  # save input content in session if fail
             messages.warning(request, 'AN EXCEPTION OCCURS!')
@@ -167,4 +167,4 @@ def post_comment(request):
 
 class NavList(ListView):  # list category names in navigation bar
     model = Category
-    template_name = 'nav.html'
+    template_name = 'blog/nav.html'

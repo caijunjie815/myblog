@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'blog/base.html' %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block main_content %}
     <!-- post block -->
@@ -35,7 +35,7 @@
         <!-- a comment form created by ModelFrom module -->
         <div id="respond" class="comment-respond">
             <h3>Leave a message</h3>
-            <form action="{% url 'blog:comment' %}" method="post" id="commentform" class="comment-form">
+            <form action="{% url 'blog:comment' object.id %}" method="post" id="commentform" class="comment-form">
                 <!-- hidden element, used to record replied user. -->
                 <p class="comment-notes"><span id="email-notes">Your email address will not be published.</span>
                     Required fields are marked <span class="required">*</span></p>
@@ -54,7 +54,7 @@
                 </p>
 
                 <!-- message flash block-->
-                {% include 'messages.html' %}
+                {% include 'blog/messages.html' %}
             </form>
         </div>
         <hr>
