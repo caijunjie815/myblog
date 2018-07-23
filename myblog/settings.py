@@ -129,11 +129,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CKEDITOR_UPLOAD_PATH = "upload/"
 
 CKEDITOR_CONFIGS = {
-    'default': {  # 添加默认配置
+    'default': {
     },
-    'mycfg': {  # 添加自定义配置
-        'skin': 'moono',  # 设置皮肤
-        'toolbar': 'full',  # 设置工具栏加载全部功能
-        'width': '100%',  # 设置宽度
+    'mycfg': {
+        'skin': 'moono',
+        'toolbar': 'full',
+        'width': '100%',
     },
 }

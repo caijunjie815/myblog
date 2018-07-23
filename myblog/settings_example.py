@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'your secret key'
+SECRET_KEY = 'your secret key!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,7 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
+    'blog.apps.BlogConfig',
+    'django.contrib.sitemaps',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 MIDDLEWARE = [
@@ -74,8 +77,12 @@ WSGI_APPLICATION = 'myblog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'myblog',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': 'your password',
     }
 }
 
@@ -102,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Australia/Sydney'
 
 USE_I18N = True
 
@@ -114,3 +121,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# media configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CKEDITOR_UPLOAD_PATH = "upload/"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+    },
+    'mycfg': {
+        'skin': 'moono',
+        'toolbar': 'full',
+        'width': '100%',
+    },
+}
