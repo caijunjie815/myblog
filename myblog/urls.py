@@ -21,7 +21,6 @@ from blog.views import error
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     path('blog/', include('blog.urls', namespace='blog')),
     path('', RedirectView.as_view(url='/blog/')),  # redirect '/' to '/blog/' as we only have one app yet.
     path('ckeditor/', include('ckeditor_uploader.urls')),
