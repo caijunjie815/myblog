@@ -16,6 +16,8 @@
             <p>Categories:
                 {% for category in categories %}
                     <a href="{% url 'blog:category' category.id %}">{{ category }}</a>
+                {% empty %}
+                    <a>No categories yet!</a>
                 {% endfor %}</p>
         </div>
         <div class="blog-tag">
@@ -25,6 +27,8 @@
                     {% if not forloop.last %}
                         |
                     {% endif %}
+                {% empty %}
+                    <a>No tags yet!</a>
                 {% endfor %}
             </p>
         </div>
