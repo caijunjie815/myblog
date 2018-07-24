@@ -15,12 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 
-from blog.views import *
+from blog.views import error
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls', namespace='blog')),
+
+    path('blog/', include('blog.urls', namespace='blog')),
+    path('', RedirectView.as_view(url='/blog/')),  # redirect '/' to '/blog/' as we only have one app yet.
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('404/', error, name='error')
+    path('404/', error, name='error'),
 ]
