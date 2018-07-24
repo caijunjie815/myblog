@@ -32,14 +32,14 @@
     {% include 'blog/comments.html' %}
     <script>
         function reply(comment_name, comment_id) {
-            $('#content').attr('placeholder', 'Reply to ' + comment_name + ':'); // 设置内容输入框的提示
-            $('#reply').val(comment_id) //设置隐藏元素的值为评论目标的id
+            $('#content').attr('placeholder', 'Reply to ' + comment_name + ':');
+            $('#reply').val(comment_id)
         }
 
         function onload() {     // put this function in body element to load session
-            $('#name').val('{{ session.name }}'); // 设置昵称为session中的昵称
-            $('#email').val('{{ session.email }}'); // 设置邮箱为session中的邮箱
-            $('#content').val('{{ session.content }}') // 设置内容为session中的内容
+            $('#name').val('{{ session.name }}');
+            $('#email').val('{{ session.email }}');
+            $('#content').val('{{ session.content }}')
         }
     </script>
 {% endblock %}
