@@ -12,11 +12,6 @@
             <div class="form-group comment-form-author">{{ comment_form.name }}</div>
             <div class="form-group comment-form-email">{{ comment_form.email }}</div>
             <div class="form-group comment-form-comment">{{ comment_form.content }}</div>
-            {% comment %}
-            <div class="form-group comment-form-comment">
-                <input type="hidden" id="article" name="article" value="{{ object.id }}">
-            </div>
-            {% endcomment %}
             <div class="form-group comment-form-comment">
                 <input type="hidden" id="reply" name="reply" value="0">
             </div>

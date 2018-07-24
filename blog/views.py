@@ -13,7 +13,6 @@ class PostList(ListView):
     """
     list view for index.html
     """
-    model = Post
     template_name = 'blog/index.html'
     queryset = Post.objects.all().order_by('-id')
     paginate_by = 5  # set numbers of posts per page.
@@ -23,17 +22,16 @@ class CategoryList(ListView):
     """
     list all posts in a given category ordered by posted time.
     """
-    model = Post
     template_name = 'blog/category.html'
     paginate_by = 5
 
     def get_queryset(self):  # get queryset
-        return Post.objects.filter(category=self.kwargs['category']).order_by('-id')
+        self.category = get_object_or_404(Category, id=self.kwargs['category'])
+        return Post.objects.filter(category=self.category).order_by('-id')
 
     def get_context_data(self, **kwargs):  # pass extra arguments to template.
         context = super().get_context_data(**kwargs)
-        category = Category.objects.get(id=self.kwargs['category'])
-        context['category'] = category.name  # the variable name "category" will be used in template in {{category}}.
+        context['category'] = self.category  # the variable name "category" will be used in template in {{category}}.
         return context
 
 
@@ -113,10 +111,10 @@ class Search(ListView):
         return Post.objects.filter(Q(title__icontains=key) | Q(content__icontains=key)).order_by('-id')
 
     def get_context_data(self, **kwargs):
-        context = super(Search, self).get_context_data(**kwargs)
-        context['key'] = self.request.GET['key']
-        context['tags'] = get_list_or_404(Tag)
-        context['categories'] = get_list_or_404(Category)
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        context['categories'] = Category.objects.all()
+        context['key'] = self.request.GET.get('key')
         return context
 
 
@@ -125,7 +123,7 @@ def about(request):
 
 
 def error(request):
-    return render(request, '404.html')
+    return render(request, 'blog/404.html')
 
 
 @require_POST  # only accept a POST request; otherwise return a  django.http.HttpResponseNotAllowed
@@ -134,7 +132,7 @@ def post_comment(request, article_id):
     function to handle post request from comment form.
     if valid form, save form data into database and return a redirected page.
     if not, return previous page.
-
+    :param article_id: captured from url.
     :param request: http POST request
     :return: redirected page if valid; otherwise, previous page with prompt message
     """
@@ -151,7 +149,7 @@ def post_comment(request, article_id):
         try:
             messages.success(request, 'Your comment was added successfully!')
             form.save()  # save posted form date into database
-            request.session['content'] = ''  # save null into session if successful
+            request.session['content'] = ''  # session nothing if successful
             return redirect('blog:article', article_id)
         except Exception:
             request.session['content'] = request.POST.get('content')  # save input content in session if fail
