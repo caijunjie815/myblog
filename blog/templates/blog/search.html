@@ -2,7 +2,7 @@
 {% block title %}Search{% endblock %}
 {% block main_content %}
     {% if key %}
-        <h3 class="pb-3 mb-4 font-italic border-bottom">Post related to "{{ key }}":</h3>
+        <h3 class="pb-3 mb-4 font-italic border-bottom">Search for "{{ key }}":</h3>
         {% for post in page_obj.object_list %}
             {% include 'blog/post_list_body.html' %}
         {% empty %}

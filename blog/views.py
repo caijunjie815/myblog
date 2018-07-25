@@ -107,11 +107,14 @@ class Search(ListView):
 	paginate_by = 5
 
 	def get_queryset(self):
-		key = self.request.GET['key']
-		return Post.objects.filter(Q(title__icontains=key) | Q(content__icontains=key)).order_by('-id')
+		result = super(Search, self).get_queryset()
+		queries = self.request.GET.get('key')
+		if queries:
+			result = Post.objects.filter(Q(title__icontains=queries) | Q(content__icontains=queries)).order_by('-id')
+		return result
 
 	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
+		context = super(Search, self).get_context_data(**kwargs)
 		context['tags'] = Tag.objects.all()
 		context['categories'] = Category.objects.all()
 		context['key'] = self.request.GET.get('key')
