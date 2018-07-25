@@ -1,6 +1,6 @@
 # custom files
 .idea
-setting.py
+settings.py
 db.sqlite3
 myblog/__pycache__/
 
